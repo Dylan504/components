@@ -16,19 +16,22 @@
     <!--</el-col>-->
 
     <!--列表-->
-    <el-table highlight-current-row v-loading="listLoading" >
+    <el-table :data="dataList" highlight-current-row v-loading="listLoading" >
 
       <el-table-column v-if="pageDef.tabDef.isSelect" type="selection" width="55">
       </el-table-column>
       <el-table-column v-if="pageDef.tabDef.isIndex" type="index" width="60">
       </el-table-column>
       <template v-for="tabCol in pageDef.tabDef.tabCols">
-        <template v-if="tabCol.isSort">
-          <el-table-column :label="tabCol.label" sortable>
+        <template  v-if="tabCol.isSort" >
+          <el-table-column :label="tabCol.label" :prop="tabCol.prop" sortable
+                           :formatter="formatVal">
+
           </el-table-column>
         </template>
-        <template v-else>
-          <el-table-column :label="tabCol.label">
+        <template  v-else >
+          <el-table-column :label="tabCol.label" :prop="tabCol.prop"
+                           :formatter="formatVal">
           </el-table-column>
         </template>
       </template>
@@ -43,11 +46,18 @@
 </template>
 
 <script>
+  import formatter from "@/utils/formatter"
   export default {
-    props:['pageDef'],
+    props:['pageDef','dataList'],
     data(){
       return {
         listLoading: false
+      }
+    },
+    methods:{
+      formatVal(row,column,cellValue){
+        console.log("format column"+cellValue)
+        return formatter(column.property,cellValue)
       }
     }
   }
